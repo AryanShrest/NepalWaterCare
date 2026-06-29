@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import heroBg from "@/assets/nepalwatercare-hero-bg.png.asset.json";
 import tankImg from "@/assets/water-tank.jpg";
 import drainImg from "@/assets/drainage.jpg";
 import solarImg from "@/assets/solar.jpg";
@@ -66,8 +66,9 @@ function Home() {
 
       {/* HERO */}
       <section id="top" className="relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
-        <div className="absolute inset-0 opacity-30">
-          <img src={heroImg} alt="" className="w-full h-full object-cover" width={1600} height={1024} />
+        <div className="absolute inset-0">
+          <img src={heroBg.url} alt="" className="w-full h-full object-cover" width={1600} height={1200} />
+          <div className="absolute inset-0 bg-primary/60" />
         </div>
         <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
           <div className="text-white">
