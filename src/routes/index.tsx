@@ -5,6 +5,7 @@ import tankImg from "@/assets/water-tank.jpg";
 import drainImg from "@/assets/drainage.jpg";
 import solarImg from "@/assets/solar.jpg";
 import wellImg from "@/assets/well.jpg";
+import logoAsset from "@/assets/nepalwatercare-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Home,
