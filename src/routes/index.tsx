@@ -216,7 +216,7 @@ function Home() {
             </button>
           </form>
           <div className="mt-8 inline-flex items-center gap-2 text-white/80 text-sm">
-            <Phone className="w-4 h-4" /> Or call us directly: <a href="tel:+919999999999" className="font-semibold text-white underline">+91 99999 99999</a>
+            <Phone className="w-4 h-4" /> Or call us directly: <a href="tel:+9779800000000" className="font-semibold text-white underline">+977 9800000000</a>
           </div>
         </div>
       </section>
