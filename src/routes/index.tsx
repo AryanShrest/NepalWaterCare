@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import heroBg from "@/assets/nepalwatercare-hero-bg.png.asset.json";
 import tankImg from "@/assets/water-tank.jpg";
 import drainImg from "@/assets/drainage.jpg";
 import solarImg from "@/assets/solar.jpg";
