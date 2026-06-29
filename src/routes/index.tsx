@@ -5,6 +5,7 @@ import tankImg from "@/assets/water-tank.jpg";
 import drainImg from "@/assets/drainage.jpg";
 import solarImg from "@/assets/solar.jpg";
 import wellImg from "@/assets/well.jpg";
+import logoAsset from "@/assets/nepalwatercare-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -47,11 +48,9 @@ function Home() {
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-2 font-display font-bold text-xl">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center text-primary-foreground" style={{ background: "var(--gradient-brand)" }}>
-              <Droplets className="w-4 h-4" />
-            </span>
-            AquaPure
+          <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
+            <img src={logoAsset.url} alt="NepalWaterCare logo" className="w-10 h-10 object-contain" width={40} height={40} />
+            <span>Nepal<span className="text-brand">Water</span>Care</span>
           </a>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="#services" className="hover:text-brand transition">Services</a>
@@ -133,7 +132,7 @@ function Home() {
       <section id="why" className="bg-secondary/50 border-y border-border">
         <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Why AquaPure</span>
+            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Why NepalWaterCare</span>
             <h2 className="mt-3 text-4xl md:text-5xl font-bold">Built on trust. Backed by results.</h2>
             <p className="mt-5 text-muted-foreground">A decade of experience cleaning India's homes, businesses and farms — with safety, transparency and speed at the core.</p>
             <ul className="mt-8 space-y-4">
@@ -216,11 +215,9 @@ function Home() {
       {/* FOOTER */}
       <footer className="bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row gap-6 items-center justify-between">
-          <div className="flex items-center gap-2 font-display font-bold text-xl">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
-              <Droplets className="w-4 h-4" />
-            </span>
-            AquaPure
+          <div className="flex items-center gap-2 font-display font-bold text-lg">
+            <img src={logoAsset.url} alt="NepalWaterCare logo" className="w-10 h-10 object-contain bg-white rounded-lg p-1" width={40} height={40} />
+            <span>NepalWaterCare</span>
           </div>
           <p className="text-sm text-primary-foreground/70">© 2026 AquaPure Services. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
