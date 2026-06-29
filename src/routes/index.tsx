@@ -48,11 +48,9 @@ function Home() {
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-2 font-display font-bold text-xl">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center text-primary-foreground" style={{ background: "var(--gradient-brand)" }}>
-              <Droplets className="w-4 h-4" />
-            </span>
-            AquaPure
+          <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
+            <img src={logoAsset.url} alt="NepalWaterCare logo" className="w-10 h-10 object-contain" width={40} height={40} />
+            <span>Nepal<span className="text-brand">Water</span>Care</span>
           </a>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="#services" className="hover:text-brand transition">Services</a>
