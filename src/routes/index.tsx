@@ -90,11 +90,11 @@ function Home() {
               Professional cleaning for water tanks, drainage, solar panels and wells — booked in seconds, done in hours.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#services" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-primary font-semibold shadow-lg hover:scale-[1.02] transition">
-                Explore services <ArrowRight className="w-4 h-4" />
+              <a href="tel:+9779800000000" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#2563EB] text-white font-semibold shadow-lg hover:opacity-90 transition">
+                <Phone className="w-4 h-4" /> Call Now
               </a>
-              <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition">
-                Get a free quote
+              <a href="https://wa.me/9779800000000" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#25D366] text-white font-semibold shadow-lg hover:opacity-90 transition">
+                <WhatsAppIcon className="w-4 h-4" /> WhatsApp
               </a>
             </div>
             <div className="mt-10 flex items-center gap-8 text-sm text-white/80">
