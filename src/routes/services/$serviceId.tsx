@@ -3,6 +3,7 @@ import { ArrowLeft, Phone, WhatsAppIcon, CheckCircle2, Calendar, Clock } from 'l
 import { services, getServiceById, Service } from '@/data/services';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import tankImg from '@/assets/water-tank.jpg';
 import drainImg from '@/assets/drainage.jpg';
 import solarImg from '@/assets/solar.jpg';
@@ -18,6 +19,17 @@ function ServiceDetailPage() {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
+  
+  // Intersection observers for scroll animations
+  const heroSection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+  
+  const detailsSection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
 
   useEffect(() => {
     const fetchService = async () => {
@@ -155,7 +167,14 @@ function ServiceDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left side: Service details */}
-          <div className="lg:col-span-2">
+          <div 
+            ref={detailsSection.ref as any}
+            className={`lg:col-span-2 transition-all duration-700 ease-out ${
+              detailsSection.isIntersecting 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             {/* Banner */}
             <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
               <img
@@ -176,7 +195,7 @@ function ServiceDetailPage() {
 
             {/* Long Description */}
             <div className="mb-8">
-              <p className="text-lg leading-relaxed text-muted-foreground">
+              <p className="text-lg leading-relaxed text-muted-foreground text-justify">
                 {service.longDescription}
               </p>
             </div>
@@ -214,7 +233,14 @@ function ServiceDetailPage() {
           </div>
 
           {/* Right side: Booking section */}
-          <div>
+          <div 
+            ref={heroSection.ref as any}
+            className={`transition-all duration-700 ease-out delay-150 ${
+              heroSection.isIntersecting 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <div className="sticky top-24 border border-border rounded-2xl p-6 bg-card shadow-lg">
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 mb-2">
@@ -323,8 +349,8 @@ function ServiceDetailPage() {
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-sm">
-                  <span>🪣</span>
-                  <span>{service.price}</span>
+                  <span>Service: {service.title}</span>
+                  <span className="ml-auto">{service.price}</span>
                 </div>
               </div>
 
@@ -333,9 +359,8 @@ function ServiceDetailPage() {
                 href="https://wa.me/9779714117380"
                 target="_blank"
                 rel="noreferrer"
-                className="w-full py-3 bg-[#1e3a5f] text-white font-bold rounded-xl text-lg shadow-lg hover:bg-[#0f2440] transition flex items-center justify-center gap-2"
+                className="w-full py-3 bg-[#1e3a5f] text-white font-bold rounded-xl text-lg shadow-lg hover:bg-[#0f2440] transition flex items-center justify-center"
               >
-                <span>🪣</span>
                 Book Now via WhatsApp
               </a>
               <p className="text-center text-xs text-muted-foreground mt-2">

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import heroBgImg from '@/assets/hero.jpg';
 import tankImg from '@/assets/water-tank.jpg';
 import drainImg from '@/assets/drainage.jpg';
@@ -74,6 +75,27 @@ function Home() {
     fetchServices();
   }, [refreshKey]);
 
+  // Intersection observers for scroll animations
+  const servicesSection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+  
+  const whySection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+  
+  const testimonialsSection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+  
+  const contactSection = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* NAV */}
@@ -130,68 +152,86 @@ function Home() {
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="px-6 py-24">
-        <div className="text-left max-w-7xl">
-          <span className="text-sm font-semibold text-brand uppercase tracking-wider">Our Services</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">Everything your property needs, sparkling clean.</h2>
+      <section 
+        id="services" 
+        ref={servicesSection.ref as any}
+        className={`py-24 transition-all duration-700 ease-out ${
+          servicesSection.isIntersecting 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-left">
+            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Our Services</span>
+            <h2 className="mt-3 text-4xl md:text-5xl font-bold">Everything your property needs, sparkling clean.</h2>
+          </div>
+          
+          {loading ? (
+            <div className="mt-14 text-center py-12">
+              <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p>Loading services...</p>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="mt-14 text-center py-12">
+              <p className="text-muted-foreground text-lg mb-4">No services available at the moment</p>
+              <p className="text-sm text-muted-foreground">Please check back later or contact us directly</p>
+            </div>
+          ) : (
+            <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {services.map((s) => {
+                const IconComponent = iconMap[s.icon] || Droplets;
+                const truncatedDescription = s.description ? 
+                  s.description.split(' ').slice(0, 8).join(' ') + 
+                  (s.description.split(' ').length > 8 ? '...' : '') : '';
+                
+                return (
+                  <Link
+                    key={s.id}
+                    to="/services/$serviceId"
+                    params={{ serviceId: s.id.toString() }}
+                    className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col"
+                    style={{ boxShadow: 'var(--shadow-card)' }}
+                  >
+                    <div className="h-1/2 overflow-hidden">
+                      <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="h-1/2 p-6 flex flex-col">
+                      <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {truncatedDescription}
+                        </p>
+                      </div>
+                      <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Starting at</span>
+                        <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
-        
-        {loading ? (
-          <div className="mt-14 text-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p>Loading services...</p>
-          </div>
-        ) : services.length === 0 ? (
-          <div className="mt-14 text-center py-12">
-            <p className="text-muted-foreground text-lg mb-4">No services available at the moment</p>
-            <p className="text-sm text-muted-foreground">Please check back later or contact us directly</p>
-          </div>
-        ) : (
-          <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((s) => {
-              const IconComponent = iconMap[s.icon] || Droplets;
-              const truncatedDescription = s.description ? 
-                s.description.split(' ').slice(0, 8).join(' ') + 
-                (s.description.split(' ').length > 8 ? '...' : '') : '';
-              
-              return (
-                <Link
-                  key={s.id}
-                  to="/services/$serviceId"
-                  params={{ serviceId: s.id.toString() }}
-                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col"
-                  style={{ boxShadow: 'var(--shadow-card)' }}
-                >
-                  <div className="h-1/2 overflow-hidden">
-                    <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                  <div className="h-1/2 p-6 flex flex-col">
-                    <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
-                    <div className="flex-1">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {truncatedDescription}
-                      </p>
-                    </div>
-                    <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">Starting at</span>
-                      <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
       </section>
 
       {/* WHY CHOOSE US */}
-      <section id="why" className="bg-accent/5 border-y border-border">
-        <div className="px-6 py-24">
-          <div className="text-left mb-14 max-w-7xl">
+      <section 
+        id="why" 
+        ref={whySection.ref as any}
+        className={`bg-accent/5 border-y border-border transition-all duration-700 ease-out ${
+          whySection.isIntersecting 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-left mb-14">
             <span className="text-sm font-semibold text-brand uppercase tracking-wider">Why Choose Us</span>
             <h2 className="mt-3 text-4xl md:text-5xl font-bold">Why customers love HamroDrainage</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl">
+          <div className="grid md:grid-cols-3 gap-8">
             <div className="text-left p-8 rounded-2xl bg-card border border-border">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6">
                 <Check className="w-8 h-8" />
@@ -218,53 +258,69 @@ function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section id="reviews" className="px-6 py-24">
-        <div className="text-left mb-14 max-w-7xl">
-          <span className="text-sm font-semibold text-brand uppercase tracking-wider">Testimonials</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">What our customers say</h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6 max-w-7xl">
-          {[
-            {name: "Priya Sharma", city: "Kathmandu", text: "My tank hadn't been cleaned in 5 years! The team was professional, fast, and left everything spotless. Worth every rupee!", stars: 5},
-            {name: "Rajesh Thapa", city: "Pokhara", text: "Solar panels were producing 20% more efficient after their cleaning. Great service, highly recommend!", stars: 5},
-            {name: "Sita Magar", city: "Biratnagar", text: "Drainage was completely blocked and smelling terrible. They fixed it in 2 hours. Amazing work!", stars: 5},
-          ].map((r) => (
-            <article key={r.name} className="rounded-2xl bg-card border border-border p-6 text-left">
-              <div className="flex items-center gap-1 mb-4 text-yellow-500">
-                {[...Array(r.stars)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
-              </div>
-              <p className="text-muted-foreground mb-6">{r.text}</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold">{r.name[0]}</div>
-                <div>
-                  <h4 className="font-bold">{r.name}</h4>
-                  <p className="text-sm text-muted-foreground">{r.city}</p>
+      <section 
+        id="reviews" 
+        ref={testimonialsSection.ref as any}
+        className={`py-24 transition-all duration-700 ease-out ${
+          testimonialsSection.isIntersecting 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-left mb-14">
+            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Testimonials</span>
+            <h2 className="mt-3 text-4xl md:text-5xl font-bold">What our customers say</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {name: "Priya Sharma", city: "Kathmandu", text: "My tank hadn't been cleaned in 5 years! The team was professional, fast, and left everything spotless. Worth every rupee!", stars: 5},
+              {name: "Rajesh Thapa", city: "Pokhara", text: "Solar panels were producing 20% more efficient after their cleaning. Great service, highly recommend!", stars: 5},
+              {name: "Sita Magar", city: "Biratnagar", text: "Drainage was completely blocked and smelling terrible. They fixed it in 2 hours. Amazing work!", stars: 5},
+            ].map((r) => (
+              <article key={r.name} className="rounded-2xl bg-card border border-border p-6 text-left">
+                <div className="flex items-center gap-1 mb-4 text-yellow-500">
+                  {[...Array(r.stars)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
                 </div>
-              </div>
-            </article>
-          ))}
+                <p className="text-muted-foreground mb-6">{r.text}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold">{r.name[0]}</div>
+                  <div>
+                    <h4 className="font-bold">{r.name}</h4>
+                    <p className="text-sm text-muted-foreground">{r.city}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="bg-accent/5 border-t border-border">
-        <div className="px-6 py-24 text-left">
-          <div className="max-w-7xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for cleaner water today?</h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-              Book a service in 60 seconds or call us for a free quote.
-            </p>
-            <div className="flex flex-col sm:flex-row items-start gap-4">
-              <a href="tel:+9779714117380" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#2563EB] text-white font-semibold text-lg shadow-lg hover:opacity-90 transition">
-                <Phone className="w-5 h-5" />
-                Call +977 971 411 7380
-              </a>
-              <a href="https://wa.me/9779714117380" target="_blank" rel="noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-card border border-border font-semibold text-lg hover:bg-accent/10 transition">
-                <WhatsAppIcon className="w-5 h-5" />
-                WhatsApp Us
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
+      <section 
+        id="contact" 
+        ref={contactSection.ref as any}
+        className={`bg-accent/5 border-t border-border transition-all duration-700 ease-out ${
+          contactSection.isIntersecting 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-24 text-left">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for cleaner water today?</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-xl">
+            Book a service in 60 seconds or call us for a free quote.
+          </p>
+          <div className="flex flex-col sm:flex-row items-start gap-4">
+            <a href="tel:+9779714117380" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#2563EB] text-white font-semibold text-lg shadow-lg hover:opacity-90 transition">
+              <Phone className="w-5 h-5" />
+              Call +977 971 411 7380
+            </a>
+            <a href="https://wa.me/9779714117380" target="_blank" rel="noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-card border border-border font-semibold text-lg hover:bg-accent/10 transition">
+              <WhatsAppIcon className="w-5 h-5" />
+              WhatsApp Us
+              <ArrowRight className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </section>
