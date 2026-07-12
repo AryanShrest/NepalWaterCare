@@ -1,99 +1,122 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from "lucide-react";
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState, useEffect } from 'react';
+import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import heroBgImg from '@/assets/hero.jpg';
+import tankImg from '@/assets/water-tank.jpg';
+import drainImg from '@/assets/drainage.jpg';
+import solarImg from '@/assets/solar.jpg';
+import wellImg from '@/assets/well.jpg';
+import logoImg from '@/assets/logo.jpg';
+
+
+export const Route = createFileRoute('/')({
+  component: Home,
+});
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.893c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+      <path d="M17.472 14.382c-0.297-0.149-1.758-0.867-2.03-0.967-0.273-0.099-0.471-0.148-0.67 0.15-0.197 0.297-0.767 0.966-0.94 1.164-0.173 0.199-0.347 0.223-0.644 0.075-0.297-0.149-1.255-0.463-2.39-1.475-0.883-0.788-1.48-1.761-1.653-2.059-0.173-0.297-0.018-0.458 0.13-0.606 0.134-0.133 0.298-0.347 0.446-0.52 0.149-0.174 0.198-0.298 0.298-0.497 0.099-0.198 0.05-0.372-0.025-0.52-0.075-0.149-0.669-1.612-0.916-2.207-0.242-0.579-0.487-0.5-0.669-0.51-0.173-0.008-0.371-0.01-0.57-0.01-0.198 0-0.52 0.074-0.792 0.372-0.272 0.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074 0.149 0.198 2.096 3.2 5.077 4.487 0.709 0.306 1.262 0.489 1.694 0.625 0.712 0.227 1.36 0.195 1.871 0.118 0.571-0.085 1.758-0.719 2.006-1.413 0.248-0.694 0.248-1.289 0.173-1.413-0.074-0.124-0.272-0.198-0.57-0.347zm-5.421 7.403h-0.004a9.87 9.87 0 0 1-5.031-1.378l-0.361-0.214-3.741 0.982 0.998-3.648-0.235-0.374a9.86 9.86 0 0 1-1.51-5.26c0.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-0.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 0.16 5.335 0.157 11.893c0 2.096 0.547 4.142 1.588 5.945L0.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h0.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
     </svg>
   );
 }
-import heroBg from "@/assets/nepalwatercare-hero-bg.png.asset.json";
-import tankImg from "@/assets/water-tank.jpg";
-import drainImg from "@/assets/drainage.jpg";
-import solarImg from "@/assets/solar.jpg";
-import wellImg from "@/assets/well.jpg";
-import logoAsset from "@/assets/nepalwatercare-logo.png.asset.json";
 
-export const Route = createFileRoute("/")({
-  component: Home,
-});
+const iconMap: Record<string, any> = {
+  Droplets,
+  Waves,
+  Sun,
+  CircleDot,
+};
 
-const services = [
-  {
-    icon: Droplets,
-    title: "Water Tank Cleaning",
-    desc: "Deep sanitization of overhead & underground tanks with eco-safe disinfectants.",
-    price: "₹1,499",
-    img: tankImg,
-  },
-  {
-    icon: Waves,
-    title: "Drainage Cleaning",
-    desc: "High-pressure jet cleaning to clear blockages and restore smooth flow.",
-    price: "₹999",
-    img: drainImg,
-  },
-  {
-    icon: Sun,
-    title: "Solar Panel Cleaning",
-    desc: "Boost panel efficiency up to 30% with safe, streak-free professional wash.",
-    price: "₹799",
-    img: solarImg,
-  },
-  {
-    icon: CircleDot,
-    title: "Well Cleaning",
-    desc: "Complete desilting, scrubbing and chlorination for safe drinking water.",
-    price: "₹2,499",
-    img: wellImg,
-  },
-];
+
 
 function Home() {
+  const [services, setServices] = useState<any[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const fetchServices = async () => {
+    setLoading(true);
+    console.log('Fetching services from Supabase...');
+    
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        setServices([]);
+      } else {
+        console.log('✅ Fetched real services:', data);
+        if (data && data.length > 0) {
+          const mappedData = data.map((s: any) => ({
+            ...s,
+            img: s.image_url || tankImg, // Use uploaded image or fallback
+            icon: s.icon || 'Droplets'
+          }));
+          setServices(mappedData);
+        } else {
+          setServices([]);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching services:', err);
+      setServices([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+  }, [refreshKey]);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* NAV */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
-            <img src={logoAsset.url} alt="NepalWaterCare logo" className="w-10 h-10 object-contain" width={40} height={40} />
-            <span>Nepal<span className="text-brand">Water</span>Care</span>
+        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+          <a href="#top" className="flex items-center gap-4 font-display font-bold text-3xl">
+            <img src={logoImg} alt="HamroDrainage logo" className="w-20 h-20 object-contain" width={80} height={80} />
+            <span>Hamro<span className="text-brand">Drainage</span></span>
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-6 text-lg font-medium">
             <a href="#services" className="hover:text-brand transition">Services</a>
             <a href="#why" className="hover:text-brand transition">Why Us</a>
             <a href="#reviews" className="hover:text-brand transition">Reviews</a>
             <a href="#contact" className="hover:text-brand transition">Contact</a>
           </nav>
-          <a href="#contact" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition">
-            <Phone className="w-4 h-4" /> Book Now
+          <a href="#contact" className="hidden md:flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-lg">
+            <Phone className="w-5 h-5" />
+            Book Now
           </a>
         </div>
       </header>
 
       {/* HERO */}
-      <section id="top" className="relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
+      <section id="top" className="relative overflow-hidden" style={{ background: 'var(--gradient-hero)', minHeight: '80vh' }}>
         <div className="absolute inset-0">
-          <img src={heroBg.url} alt="" className="w-full h-full object-cover" width={1600} height={1200} />
+          <img src={heroBgImg} alt="" className="w-full h-full object-cover" width={1600} height={1200} />
           <div className="absolute inset-0 bg-primary/60" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
-          <div className="text-white">
+        <div className="relative px-6 py-24 md:py-32 flex items-center min-h-[80vh] max-w-7xl mx-auto">
+          <div className="text-white text-left max-w-3xl">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-xs font-medium border border-white/20">
               <ShieldCheck className="w-3.5 h-3.5" /> Trusted by 10,000+ homes
             </span>
             <h1 className="mt-6 text-5xl md:text-6xl font-bold leading-[1.05]">
-              Cleaner water. <br /> <span style={{ color: "oklch(0.85 0.15 195)" }}>Brighter living.</span>
-            </h1>
+              Cleaner water. <br /><span style={{ color: 'oklch(0.85 0.15 195)' }}>Brighter living.</span></h1>
             <p className="mt-6 text-lg text-white/85 max-w-lg">
               Professional cleaning for water tanks, drainage, solar panels and wells — booked in seconds, done in hours.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="tel:+9779800000000" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#2563EB] text-white font-semibold shadow-lg hover:opacity-90 transition">
+              <a href="tel:+9779714117380" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#2563EB] text-white font-semibold shadow-lg hover:opacity-90 transition">
                 <Phone className="w-4 h-4" /> Call Now
               </a>
-              <a href="https://wa.me/9779800000000" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#25D366] text-white font-semibold shadow-lg hover:opacity-90 transition">
+              <a href="https://wa.me/9779714117380" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#25D366] text-white font-semibold shadow-lg hover:opacity-90 transition">
                 <WhatsAppIcon className="w-4 h-4" /> WhatsApp
               </a>
             </div>
@@ -107,131 +130,183 @@ function Home() {
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="max-w-7xl mx-auto px-6 py-24">
-        <div className="max-w-2xl">
+      <section id="services" className="px-6 py-24">
+        <div className="text-left max-w-7xl">
           <span className="text-sm font-semibold text-brand uppercase tracking-wider">Our Services</span>
           <h2 className="mt-3 text-4xl md:text-5xl font-bold">Everything your property needs, sparkling clean.</h2>
         </div>
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((s) => (
-            <article key={s.title} className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300" style={{ boxShadow: "var(--shadow-card)" }}>
-              <div className="aspect-[4/3] overflow-hidden">
-                <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        
+        {loading ? (
+          <div className="mt-14 text-center py-12">
+            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>Loading services...</p>
+          </div>
+        ) : services.length === 0 ? (
+          <div className="mt-14 text-center py-12">
+            <p className="text-muted-foreground text-lg mb-4">No services available at the moment</p>
+            <p className="text-sm text-muted-foreground">Please check back later or contact us directly</p>
+          </div>
+        ) : (
+          <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.map((s) => {
+              const IconComponent = iconMap[s.icon] || Droplets;
+              const truncatedDescription = s.description ? 
+                s.description.split(' ').slice(0, 8).join(' ') + 
+                (s.description.split(' ').length > 8 ? '...' : '') : '';
+              const needsReadMore = s.description && s.description.split(' ').length > 8;
+              
+              return (
+                <article key={s.id} className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col" style={{ boxShadow: 'var(--shadow-card)' }}>
+                  <div className="h-1/2 overflow-hidden">
+                    <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <div className="h-1/2 p-6 flex flex-col">
+                    <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
+                    <div className="flex-1">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {truncatedDescription}
+                        {needsReadMore && (
+                          <button 
+                            onClick={() => alert(`Full description: ${s.description}`)}
+                            className="ml-1 text-primary hover:underline font-medium"
+                          >
+                            Read More
+                          </button>
+                        )}
+                      </p>
+                    </div>
+                    <div className="mt-auto pt-3 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Starting at</span>
+                        <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* WHY CHOOSE US */}
+      <section id="why" className="bg-accent/5 border-y border-border">
+        <div className="px-6 py-24">
+          <div className="text-left mb-14 max-w-7xl">
+            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Why Choose Us</span>
+            <h2 className="mt-3 text-4xl md:text-5xl font-bold">Why customers love HamroDrainage</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl">
+            <div className="text-left p-8 rounded-2xl bg-card border border-border">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6">
+                <Check className="w-8 h-8" />
               </div>
-              <div className="p-6">
-                <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center text-brand mb-4">
-                  <s.icon className="w-5 h-5" />
+              <h3 className="text-xl font-bold mb-2">Certified Experts</h3>
+              <p className="text-muted-foreground">Background-checked, trained professionals with 5+ years experience.</p>
+            </div>
+            <div className="text-left p-8 rounded-2xl bg-card border border-border">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6">
+                <Clock className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">On-Time Guarantee</h3>
+              <p className="text-muted-foreground">We arrive when we say we will — or your next clean is 50% off.</p>
+            </div>
+            <div className="text-left p-8 rounded-2xl bg-card border border-border">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">100% Satisfaction</h3>
+              <p className="text-muted-foreground">Not happy? We'll re-clean for free. No questions asked.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section id="reviews" className="px-6 py-24">
+        <div className="text-left mb-14 max-w-7xl">
+          <span className="text-sm font-semibold text-brand uppercase tracking-wider">Testimonials</span>
+          <h2 className="mt-3 text-4xl md:text-5xl font-bold">What our customers say</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 max-w-7xl">
+          {[
+            {name: "Priya Sharma", city: "Kathmandu", text: "My tank hadn't been cleaned in 5 years! The team was professional, fast, and left everything spotless. Worth every rupee!", stars: 5},
+            {name: "Rajesh Thapa", city: "Pokhara", text: "Solar panels were producing 20% more efficient after their cleaning. Great service, highly recommend!", stars: 5},
+            {name: "Sita Magar", city: "Biratnagar", text: "Drainage was completely blocked and smelling terrible. They fixed it in 2 hours. Amazing work!", stars: 5},
+          ].map((r) => (
+            <article key={r.name} className="rounded-2xl bg-card border border-border p-6 text-left">
+              <div className="flex items-center gap-1 mb-4 text-yellow-500">
+                {[...Array(r.stars)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
+              </div>
+              <p className="text-muted-foreground mb-6">{r.text}</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold">{r.name[0]}</div>
+                <div>
+                  <h4 className="font-bold">{r.name}</h4>
+                  <p className="text-sm text-muted-foreground">{r.city}</p>
                 </div>
-                <h3 className="text-lg font-bold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                <div className="mt-5 flex items-center justify-between pt-4 border-t border-border">
-                  <span className="text-xs text-muted-foreground">Starting at</span>
-                  <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
-                </div>
-                <a href="#contact" className="mt-4 w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-brand transition">
-                  Book service <ArrowRight className="w-3.5 h-3.5" />
-                </a>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      {/* WHY US */}
-      <section id="why" className="bg-secondary/50 border-y border-border">
-        <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <span className="text-sm font-semibold text-brand uppercase tracking-wider">Why NepalWaterCare</span>
-            <h2 className="mt-3 text-4xl md:text-5xl font-bold">Built on trust. Backed by results.</h2>
-            <p className="mt-5 text-muted-foreground">A decade of experience cleaning India's homes, businesses and farms — with safety, transparency and speed at the core.</p>
-            <ul className="mt-8 space-y-4">
-              {[
-                "Eco-friendly, ISI-certified cleaning agents",
-                "Trained & background-verified professionals",
-                "Before/after photos with every job",
-                "Service warranty up to 3 months",
-              ].map((f) => (
-                <li key={f} className="flex items-start gap-3">
-                  <span className="mt-1 w-5 h-5 rounded-full flex items-center justify-center text-primary-foreground" style={{ background: "var(--gradient-brand)" }}>
-                    <Check className="w-3 h-3" />
-                  </span>
-                  <span className="font-medium">{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { icon: ShieldCheck, h: "100% Safe", p: "Insured & verified team" },
-              { icon: Clock, h: "On-time", p: "Same-day service" },
-              { icon: Star, h: "Top rated", p: "4.9★ from 2k+ reviews" },
-              { icon: Droplets, h: "Eco-friendly", p: "Non-toxic chemicals" },
-            ].map((c) => (
-              <div key={c.h} className="p-6 rounded-2xl bg-card border border-border" style={{ boxShadow: "var(--shadow-card)" }}>
-                <c.icon className="w-6 h-6 text-brand" />
-                <div className="mt-4 font-bold">{c.h}</div>
-                <div className="text-sm text-muted-foreground">{c.p}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* REVIEWS */}
-      <section id="reviews" className="max-w-7xl mx-auto px-6 py-24">
-        <div className="max-w-2xl">
-          <span className="text-sm font-semibold text-brand uppercase tracking-wider">Reviews</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">Loved by thousands of homes.</h2>
-        </div>
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
-          {[
-            { n: "Priya S.", r: "Bengaluru", t: "Booked tank cleaning on Sunday morning. Team arrived in 2 hours and did an incredible job. Water tastes fresh again!" },
-            { n: "Rahul M.", r: "Pune", t: "My solar panels were producing 25% more power after their wash. Worth every rupee." },
-            { n: "Anita K.", r: "Chennai", t: "Drainage was blocked for weeks — they fixed it in under an hour. Professional and clean work." },
-          ].map((r) => (
-            <div key={r.n} className="p-7 rounded-2xl bg-card border border-border" style={{ boxShadow: "var(--shadow-card)" }}>
-              <div className="flex gap-0.5 text-accent-warm">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-              </div>
-              <p className="mt-4 text-foreground leading-relaxed">"{r.t}"</p>
-              <div className="mt-5 pt-4 border-t border-border">
-                <div className="font-semibold">{r.n}</div>
-                <div className="text-sm text-muted-foreground">{r.r}</div>
-              </div>
+      {/* CONTACT */}
+      <section id="contact" className="bg-accent/5 border-t border-border">
+        <div className="px-6 py-24 text-left">
+          <div className="max-w-7xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for cleaner water today?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl">
+              Book a service in 60 seconds or call us for a free quote.
+            </p>
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <a href="tel:+9779714117380" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#2563EB] text-white font-semibold text-lg shadow-lg hover:opacity-90 transition">
+                <Phone className="w-5 h-5" />
+                Call +977 971 411 7380
+              </a>
+              <a href="https://wa.me/9779714117380" target="_blank" rel="noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-card border border-border font-semibold text-lg hover:bg-accent/10 transition">
+                <WhatsAppIcon className="w-5 h-5" />
+                WhatsApp Us
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA / CONTACT */}
-      <section id="contact" className="relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-        <div className="relative max-w-5xl mx-auto px-6 py-24 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold">Ready for cleaner, safer water?</h2>
-          <p className="mt-5 text-lg text-white/85 max-w-xl mx-auto">Get a free quote in under a minute. Our team will reach out within 30 minutes.</p>
-          <form className="mt-10 max-w-xl mx-auto flex flex-col sm:flex-row gap-3 p-2 bg-white/10 backdrop-blur rounded-2xl border border-white/20">
-            <input type="tel" placeholder="Your phone number" className="flex-1 px-5 py-3 rounded-xl bg-white/95 text-foreground placeholder:text-muted-foreground focus:outline-none" />
-            <button type="button" className="px-6 py-3 rounded-xl bg-foreground text-background font-semibold hover:opacity-90 transition inline-flex items-center justify-center gap-2">
-              Request callback <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-          <div className="mt-8 inline-flex items-center gap-2 text-white/80 text-sm">
-            <Phone className="w-4 h-4" /> Or call us directly: <a href="tel:+9779800000000" className="font-semibold text-white underline">+977 9800000000</a>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row gap-6 items-center justify-between">
-          <div className="flex items-center gap-2 font-display font-bold text-lg">
-            <img src={logoAsset.url} alt="NepalWaterCare logo" className="w-10 h-10 object-contain bg-white rounded-lg p-1" width={40} height={40} />
-            <span>NepalWaterCare</span>
+      <footer className="border-t border-border bg-background">
+        <div className="px-6 py-12">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <a href="#top" className="flex items-center gap-3 font-display font-bold text-xl mb-4">
+                <img src={logoImg} alt="HamroDrainage logo" className="w-12 h-12 object-contain" width={48} height={48} />
+                <span>Hamro<span className="text-brand">Drainage</span></span>
+              </a>
+              <p className="text-muted-foreground max-w-sm">
+                Nepal's most trusted professional water tank, drainage, and solar panel cleaning service.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Quick Links</h4>
+              <div className="space-y-2 text-muted-foreground">
+                <a href="#services" className="block hover:text-brand transition">Services</a>
+                <a href="#why" className="block hover:text-brand transition">Why Us</a>
+                <a href="#reviews" className="block hover:text-brand transition">Reviews</a>
+                <Link to="/admin" className="block hover:text-brand transition">Admin</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Contact</h4>
+              <div className="space-y-2 text-muted-foreground">
+                <a href="tel:+9779714117380" className="block hover:text-brand transition">+977 971 411 7380</a>
+                <p>info@hamrodrainage.com</p>
+                <p>Kathmandu, Nepal</p>
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-primary-foreground/70">© 2026 AquaPure Services. All rights reserved.</p>
-          <div className="flex gap-6 text-sm">
-            <a href="#services" className="hover:text-accent transition">Services</a>
-            <a href="#contact" className="hover:text-accent transition">Contact</a>
+          <div className="mt-12 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} HamroDrainage. All rights reserved.
           </div>
         </div>
       </footer>
