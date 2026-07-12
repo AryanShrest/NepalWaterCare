@@ -153,10 +153,15 @@ function Home() {
               const truncatedDescription = s.description ? 
                 s.description.split(' ').slice(0, 8).join(' ') + 
                 (s.description.split(' ').length > 8 ? '...' : '') : '';
-              const needsReadMore = s.description && s.description.split(' ').length > 8;
               
               return (
-                <article key={s.id} className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col" style={{ boxShadow: 'var(--shadow-card)' }}>
+                <Link
+                  key={s.id}
+                  to="/services/$serviceId"
+                  params={{ serviceId: s.id.toString() }}
+                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col"
+                  style={{ boxShadow: 'var(--shadow-card)' }}
+                >
                   <div className="h-1/2 overflow-hidden">
                     <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
@@ -165,24 +170,14 @@ function Home() {
                     <div className="flex-1">
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         {truncatedDescription}
-                        {needsReadMore && (
-                          <button 
-                            onClick={() => alert(`Full description: ${s.description}`)}
-                            className="ml-1 text-primary hover:underline font-medium"
-                          >
-                            Read More
-                          </button>
-                        )}
                       </p>
                     </div>
-                    <div className="mt-auto pt-3 border-t border-border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Starting at</span>
-                        <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
-                      </div>
+                    <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">Starting at</span>
+                      <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
                     </div>
                   </div>
-                </article>
+                </Link>
               );
             })}
           </div>
