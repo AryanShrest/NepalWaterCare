@@ -16,23 +16,26 @@ export const Route = createFileRoute('/admin')({
 });
 
 const iconOptions = ['Droplets', 'Waves', 'Sun', 'CircleDot'];
-const ADMIN_PASSWORD = 'Admin@123';
+const ADMIN_USERNAME = 'PrasanShrestha123';
+const ADMIN_PASSWORD = 'Prasan123';
 
 function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       setIsLoggedIn(true);
     } else {
-      alert('Invalid password! Use: Admin@123');
+      alert('Invalid username or password!');
     }
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUsername('');
     setPassword('');
   };
 
@@ -44,8 +47,17 @@ function AdminPage() {
             <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <p className="text-sm text-muted-foreground">Default password: Admin@123</p>
                 <Input
                   id="password"
                   type="password"
