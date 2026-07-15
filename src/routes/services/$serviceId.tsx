@@ -59,17 +59,18 @@ function ServiceDetailPage() {
             }
           };
           
-          // Convert Supabase data to match our Service interface, exactly like the home page does!
-          const mappedService: Service = {
+          // Convert Supabase data to match our Service interface
+          const mappedService: any = {
             id: data.id,
             title: data.title,
             description: data.description,
             shortDesc: data.description.substring(0, 100),
             price: data.price,
             icon: data.icon || (staticService?.icon || "Droplets"),
-            img: data.image_url || data.img || staticService?.img || getFallbackImg(id), // Same logic as home page!
+            img: data.image_url || undefined, // Only set if there's an image
             video_url: data.video_url || null, // Include video URL
-            banner: data.banner || data.image_url || staticService?.banner || staticService?.img || getFallbackImg(id),
+            banner: data.banner || data.image_url || undefined, // Only set if there's a banner or image
+            fallbackBanner: staticService?.banner || staticService?.img || getFallbackImg(id),
             longDescription: data.description,
             features: data.features || (staticService?.features || [
               "Professional cleaning service",
@@ -176,38 +177,59 @@ function ServiceDetailPage() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* Banner (Video first if available) */}
-            {service.video_url && (
+            {/* Banner (Show video first if available, then image/banner, then fallback) */}
+            {service.video_url ? (
+              <>
+                <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
+                  <video 
+                    src={service.video_url} 
+                    alt={service.title}
+                    muted 
+                    loop 
+                    playsInline 
+                    autoPlay
+                    className="w-full h-80 object-cover"
+                  />
+                </div>
+                {/* If there's also an image, show that too */}
+                {(service.img || service.banner) && (
+                  <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
+                    <img
+                      src={service.banner || service.img}
+                      alt={service.title}
+                      className="w-full h-80 object-cover"
+                    />
+                  </div>
+                )}
+                {/* Show title */}
+                <div className="p-6 bg-card rounded-2xl border border-border mb-8">
+                  <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
+                  <div className="flex items-center gap-2 text-yellow-500 mb-2">
+                    {[1,2,3,4,5].map(i => (
+                      <span key={i}>★</span>
+                    ))}
+                    <span className="text-muted-foreground text-sm ml-2">4.9 (1,248 reviews)</span>
+                  </div>
+                </div>
+              </>
+            ) : (
               <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
-                <video 
-                  src={service.video_url} 
+                <img
+                  src={service.banner || service.img || service.fallbackBanner}
                   alt={service.title}
-                  muted 
-                  loop 
-                  playsInline 
-                  autoPlay
                   className="w-full h-80 object-cover"
                 />
-              </div>
-            )}
-            
-            {/* Service Image */}
-            <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
-              <img
-                src={service.banner}
-                alt={service.title}
-                className="w-full h-80 object-cover"
-              />
-              <div className="p-6 bg-card">
-                <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
-                <div className="flex items-center gap-2 text-yellow-500 mb-2">
-                  {[1,2,3,4,5].map(i => (
-                    <span key={i}>★</span>
-                  ))}
-                  <span className="text-muted-foreground text-sm ml-2">4.9 (1,248 reviews)</span>
+                <div className="p-6 bg-card">
+                  <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
+                  <div className="flex items-center gap-2 text-yellow-500 mb-2">
+                    {[1,2,3,4,5].map(i => (
+                      <span key={i}>★</span>
+                    ))}
+                    <span className="text-muted-foreground text-sm ml-2">4.9 (1,248 reviews)</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Long Description */}
             <div className="mb-8">
@@ -259,10 +281,16 @@ function ServiceDetailPage() {
           >
             <div className="sticky top-24 border border-border rounded-2xl p-6 bg-card shadow-lg">
               <div className="mb-6">
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-3xl font-bold text-orange-600">{service.price}</span>
-                  <span className="text-sm text-muted-foreground"><CheckCircle2 className="w-3.5 h-3.5 inline mr-1" /> Fixed price — will not change</span>
-                </div>
+                {service.price && service.price.trim() ? (
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-3xl font-bold text-orange-600">{service.price}</span>
+                    <span className="text-sm text-muted-foreground"><CheckCircle2 className="w-3.5 h-3.5 inline mr-1" /> Fixed price — will not change</span>
+                  </div>
+                ) : (
+                  <div className="mb-2">
+                    <span className="text-xl font-semibold text-muted-foreground italic">Contact us for pricing</span>
+                  </div>
+                )}
               </div>
 
               {/* Date Selection */}
@@ -338,16 +366,18 @@ function ServiceDetailPage() {
               </div>
 
               {/* Pricing Summary */}
-              <div className="mb-6">
-                <div className="flex justify-between mb-2">
-                  <span>Service charge</span>
-                  <span>{service.price}</span>
+              {service.price && service.price.trim() && (
+                <div className="mb-6">
+                  <div className="flex justify-between mb-2">
+                    <span>Service charge</span>
+                    <span>{service.price}</span>
+                  </div>
+                  <div className="border-t border-border pt-2 flex justify-between font-bold">
+                    <span>Total</span>
+                    <span className="text-[#1e3a5f] text-xl">{service.price}</span>
+                  </div>
                 </div>
-                <div className="border-t border-border pt-2 flex justify-between font-bold">
-                  <span>Total</span>
-                  <span className="text-[#1e3a5f] text-xl">{service.price}</span>
-                </div>
-              </div>
+              )}
 
               {/* Booking Summary */}
               <div className="bg-[#e6f0ff] p-4 rounded-xl mb-6 border border-[#1e3a5f]">
@@ -366,7 +396,7 @@ function ServiceDetailPage() {
                 )}
                 <div className="flex items-center gap-2 text-sm">
                   <span>Service: {service.title}</span>
-                  <span className="ml-auto">{service.price}</span>
+                  {service.price && service.price.trim() && <span className="ml-auto">{service.price}</span>}
                 </div>
               </div>
 

@@ -84,11 +84,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   const fetchServices = async () => {
     setLoading(true);
-    setDebugInfo('Fetching services...');
     
     try {
       const { data, error } = await supabase
@@ -98,16 +96,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       
       if (error) {
         console.error('❌ Fetch Error:', error);
-        setDebugInfo(`Fetch Error: ${error.message}`);
         setServices([]);
       } else {
         console.log('✅ Fetched services:', data);
-        setDebugInfo(`Successfully fetched ${data?.length || 0} services`);
         setServices(data || []);
       }
     } catch (err: any) {
       console.error('❌ Unexpected error:', err);
-      setDebugInfo(`Unexpected error: ${err.message}`);
       setServices([]);
     }
     
@@ -116,8 +111,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this service?')) return;
-
-    setDebugInfo(`Deleting service with ID: ${id}`);
     
     try {
       const { error } = await supabase
@@ -127,16 +120,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       
       if (error) {
         console.error('❌ Delete Error:', error);
-        setDebugInfo(`Delete Error: ${error.message}`);
         alert(`Delete failed: ${error.message}`);
       } else {
         console.log('✅ Delete successful');
-        setDebugInfo('Service deleted successfully');
         fetchServices(); // Refresh the list
       }
     } catch (err: any) {
       console.error('❌ Delete Error:', err);
-      setDebugInfo(`Delete Error: ${err.message}`);
       alert(`Delete failed: ${err.message}`);
     }
   };
@@ -168,18 +158,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      {/* Debug Panel */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <h3 className="font-bold text-lg mb-2">Debug Info:</h3>
-            <p className="font-mono text-sm bg-gray-100 p-2 rounded">
-              {debugInfo || 'No debug info'}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Header */}
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
@@ -305,7 +283,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                       <div className="mt-auto">
                         <div className="flex justify-between items-center">
-                          <span className="text-lg font-bold">{service.price}</span>
+                          <span className="text-lg font-bold">{(service.price && service.price.trim()) || "No price set"}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -322,7 +300,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           onOpenChange={setIsDialogOpen}
           editingService={editingService}
           onSuccess={handleSaveSuccess}
-          setDebugInfo={setDebugInfo}
         />
       </div>
     </div>
@@ -333,14 +310,12 @@ function ServiceDialog({
   open, 
   onOpenChange, 
   editingService, 
-  onSuccess, 
-  setDebugInfo 
+  onSuccess 
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingService: any;
   onSuccess: () => void;
-  setDebugInfo: (info: string) => void;
 }) {
   const [formData, setFormData] = useState({
     title: '',
@@ -364,7 +339,6 @@ function ServiceDialog({
     }
 
     setUploadingVideo(true);
-    setDebugInfo('Uploading video...');
 
     try {
       const fileExt = file.name.split('.').pop();
@@ -377,7 +351,6 @@ function ServiceDialog({
 
       if (error) {
         console.error('❌ Video Upload Error:', error);
-        setDebugInfo(`Video Upload Error: ${error.message}`);
         alert(`Video upload failed: ${error.message}`);
         return;
       }
@@ -388,12 +361,10 @@ function ServiceDialog({
         .getPublicUrl(filePath);
 
       setFormData(prev => ({ ...prev, video_url: publicUrl }));
-      setDebugInfo('Video uploaded successfully');
       console.log('✅ Video uploaded:', publicUrl);
 
     } catch (err: any) {
       console.error('❌ Video Upload Error:', err);
-      setDebugInfo(`Video Upload Error: ${err.message}`);
       alert(`Video upload failed: ${err.message}`);
     } finally {
       setUploadingVideo(false);
@@ -411,7 +382,6 @@ function ServiceDialog({
     }
 
     setUploading(true);
-    setDebugInfo('Uploading image...');
 
     try {
       const fileExt = file.name.split('.').pop();
@@ -424,7 +394,6 @@ function ServiceDialog({
 
       if (error) {
         console.error('❌ Upload Error:', error);
-        setDebugInfo(`Upload Error: ${error.message}`);
         alert(`Upload failed: ${error.message}`);
         return;
       }
@@ -435,12 +404,10 @@ function ServiceDialog({
         .getPublicUrl(filePath);
 
       setFormData(prev => ({ ...prev, image_url: publicUrl }));
-      setDebugInfo('Image uploaded successfully');
       console.log('✅ Image uploaded:', publicUrl);
 
     } catch (err: any) {
       console.error('❌ Upload Error:', err);
-      setDebugInfo(`Upload Error: ${err.message}`);
       alert(`Upload failed: ${err.message}`);
     } finally {
       setUploading(false);
@@ -476,12 +443,12 @@ function ServiceDialog({
     const serviceData = {
       title: formData.title,
       description: formData.description,
-      price: formData.price,
+      price: formData.price || '',
       image_url: formData.image_url || null,
       video_url: formData.video_url || null
     };
 
-    setDebugInfo(`${editingService ? 'Updating' : 'Creating'} service...`);
+
     
     try {
       if (editingService) {
@@ -492,11 +459,9 @@ function ServiceDialog({
         
         if (error) {
           console.error('❌ Update Error:', error);
-          setDebugInfo(`Update Error: ${error.message}`);
           alert(`Update failed: ${error.message}`);
         } else {
           console.log('✅ Update successful');
-          setDebugInfo('Service updated successfully');
           onSuccess();
         }
       } else {
@@ -506,17 +471,14 @@ function ServiceDialog({
         
         if (error) {
           console.error('❌ Insert Error:', error);
-          setDebugInfo(`Insert Error: ${error.message}`);
           alert(`Add failed: ${error.message}`);
         } else {
           console.log('✅ Insert successful');
-          setDebugInfo('Service added successfully');
           onSuccess();
         }
       }
     } catch (err: any) {
       console.error('❌ Save Error:', err);
-      setDebugInfo(`Save Error: ${err.message}`);
       alert(`Save failed: ${err.message}`);
     }
 
@@ -553,13 +515,12 @@ function ServiceDialog({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="price">Price *</Label>
+            <Label htmlFor="price">Price (Optional)</Label>
             <Input
               id="price"
               value={formData.price}
               onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
               placeholder="e.g. ₹1,500"
-              required
             />
           </div>
           

@@ -8,14 +8,14 @@ export interface Service {
   title: string;
   description: string;
   shortDesc: string;
-  price: string;
+  price?: string;
   icon: string;
   img: string;
   banner: string;
   longDescription: string;
   features: string[];
   includes: string[];
-  pricingDetails: string;
+  pricingDetails?: string;
   video_url?: string | null; // Optional video URL
 }
 

@@ -55,9 +55,10 @@ function Home() {
         if (data && data.length > 0) {
           const mappedData = data.map((s: any) => ({
             ...s,
-            img: s.image_url || tankImg, // Use uploaded image or fallback
+            img: s.image_url || undefined, // Only set img if there's an image_url
             video_url: s.video_url || null, // Include video URL if available
-            icon: s.icon || 'Droplets'
+            icon: s.icon || 'Droplets',
+            fallbackImg: tankImg // Keep a fallbackImg for when there's neither
           }));
           setServices(mappedData);
         } else {
@@ -197,9 +198,7 @@ function Home() {
                       style={{ boxShadow: 'var(--shadow-card)' }}
                     >
                       <div className="h-1/2 overflow-hidden">
-                        {s.img ? (
-                          <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        ) : s.video_url ? (
+                        {s.video_url ? (
                           <video 
                             src={s.video_url} 
                             alt={s.title}
@@ -209,7 +208,11 @@ function Home() {
                             autoPlay
                             className="w-full h-full object-cover"
                           />
-                        ) : null}
+                        ) : s.img ? (
+                          <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <img src={s.fallbackImg} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        )}
                       </div>
                       <div className="h-1/2 p-6 flex flex-col">
                         <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
@@ -219,9 +222,15 @@ function Home() {
                           </p>
                         </div>
                         <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">Starting at</span>
-                          <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
-                        </div>
+                        {s.price && s.price.trim() ? (
+                          <>
+                            <span className="text-xs text-muted-foreground">Starting at</span>
+                            <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
+                          </>
+                        ) : (
+                          <span className="text-sm text-muted-foreground italic">Contact for pricing</span>
+                        )}
+                      </div>
                       </div>
                     </Link>
                   );
