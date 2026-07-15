@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Droplets, Waves, Sun, CircleDot, Check, Phone, ShieldCheck, Clock, Star, ArrowRight } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import heroBgImg from '@/assets/hero.jpg';
+import heroBgImg from '@/assets/hero1.png';
 import tankImg from '@/assets/water-tank.jpg';
 import drainImg from '@/assets/drainage.jpg';
 import solarImg from '@/assets/solar.jpg';
@@ -56,6 +56,7 @@ function Home() {
           const mappedData = data.map((s: any) => ({
             ...s,
             img: s.image_url || tankImg, // Use uploaded image or fallback
+            video_url: s.video_url || null, // Include video URL if available
             icon: s.icon || 'Droplets'
           }));
           setServices(mappedData);
@@ -178,40 +179,70 @@ function Home() {
               <p className="text-sm text-muted-foreground">Please check back later or contact us directly</p>
             </div>
           ) : (
-            <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {services.map((s) => {
-                const IconComponent = iconMap[s.icon] || Droplets;
-                const truncatedDescription = s.description ? 
-                  s.description.split(' ').slice(0, 8).join(' ') + 
-                  (s.description.split(' ').length > 8 ? '...' : '') : '';
-                
-                return (
+            <>
+              <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Only show first 4 services on home page */}
+                {services.slice(0, 4).map((s) => {
+                  const IconComponent = iconMap[s.icon] || Droplets;
+                  const truncatedDescription = s.description ? 
+                    s.description.split(' ').slice(0, 8).join(' ') + 
+                    (s.description.split(' ').length > 8 ? '...' : '') : '';
+                  
+                  return (
+                    <Link
+                      key={s.id}
+                      to="/services/$serviceId"
+                      params={{ serviceId: s.id.toString() }}
+                      className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col"
+                      style={{ boxShadow: 'var(--shadow-card)' }}
+                    >
+                      <div className="h-1/2 overflow-hidden">
+                        {s.img ? (
+                          <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : s.video_url ? (
+                          <video 
+                            src={s.video_url} 
+                            alt={s.title}
+                            muted 
+                            loop 
+                            playsInline 
+                            autoPlay
+                            className="w-full h-full object-cover"
+                          />
+                        ) : null}
+                      </div>
+                      <div className="h-1/2 p-6 flex flex-col">
+                        <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {truncatedDescription}
+                          </p>
+                        </div>
+                        <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Starting at</span>
+                          <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* All Services Button - Only show if there are more than 4 services */}
+              {services.length > 4 && (
+                <div className="mt-10 text-center">
                   <Link
-                    key={s.id}
-                    to="/services/$serviceId"
-                    params={{ serviceId: s.id.toString() }}
-                    className="group rounded-2xl bg-card border border-border overflow-hidden hover:-translate-y-1 transition-all duration-300 h-[400px] flex flex-col"
-                    style={{ boxShadow: 'var(--shadow-card)' }}
+                    to="/services"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-primary text-primary-foreground font-semibold text-lg shadow-lg hover:opacity-90 transition"
                   >
-                    <div className="h-1/2 overflow-hidden">
-                      <img src={s.img} alt={s.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    </div>
-                    <div className="h-1/2 p-6 flex flex-col">
-                      <h3 className="text-lg font-bold mb-2 line-clamp-2">{s.title}</h3>
-                      <div className="flex-1">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {truncatedDescription}
-                        </p>
-                      </div>
-                      <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Starting at</span>
-                        <span className="font-display font-bold text-lg text-foreground">{s.price}</span>
-                      </div>
-                    </div>
+                    View All Services
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </Link>
-                );
-              })}
-            </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

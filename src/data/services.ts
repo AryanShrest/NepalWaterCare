@@ -16,6 +16,7 @@ export interface Service {
   features: string[];
   includes: string[];
   pricingDetails: string;
+  video_url?: string | null; // Optional video URL
 }
 
 export const services: Service[] = [

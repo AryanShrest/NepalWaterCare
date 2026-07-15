@@ -223,53 +223,82 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               const needsReadMore = service.description && service.description.split(' ').length > 50;
               
               return (
-                <Card key={service.id} className="h-80 flex flex-col">
-                  <CardContent className="pt-6 flex flex-col h-full">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-1 line-clamp-2">{service.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          ID: {service.id}
+                <div key={service.id} className="flex flex-col">
+                  {/* Show Video if available */}
+                  {service.video_url && (
+                    <div className="mb-4">
+                      <video 
+                        src={service.video_url} 
+                        alt={service.title}
+                        muted 
+                        loop 
+                        playsInline 
+                        autoPlay
+                        className="w-full h-48 object-cover rounded-lg border border-border"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Show Image if available */}
+                  {service.image_url && (
+                    <div className="mb-4">
+                      <img 
+                        src={service.image_url} 
+                        alt={service.title}
+                        className="w-full h-48 object-cover rounded-lg border border-border"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Service Card */}
+                  <Card className="h-80 flex flex-col">
+                    <CardContent className="pt-6 flex flex-col h-full">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-1 line-clamp-2">{service.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            ID: {service.id}
+                          </p>
+                        </div>
+                        <div className="flex gap-2 ml-2">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => handleEdit(service)}
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => handleDelete(service.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex-1 mb-4">
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {truncatedDescription}
+                          {needsReadMore && (
+                            <button 
+                              onClick={() => handleEdit(service)}
+                              className="ml-1 text-primary hover:underline font-medium"
+                            >
+                              Read More
+                            </button>
+                          )}
                         </p>
                       </div>
-                      <div className="flex gap-2 ml-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => handleEdit(service)}
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => handleDelete(service.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div className="mt-auto">
+                        <div className="flex justify-between items-center">
+                          <span className="text-lg font-bold">{service.price}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1 mb-4">
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        {truncatedDescription}
-                        {needsReadMore && (
-                          <button 
-                            onClick={() => handleEdit(service)}
-                            className="ml-1 text-primary hover:underline font-medium"
-                          >
-                            Read More
-                          </button>
-                        )}
-                      </p>
-                    </div>
-                    <div className="mt-auto">
-                      <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold">{service.price}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               );
             })}
           </div>

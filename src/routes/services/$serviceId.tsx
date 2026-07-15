@@ -68,6 +68,7 @@ function ServiceDetailPage() {
             price: data.price,
             icon: data.icon || (staticService?.icon || "Droplets"),
             img: data.image_url || data.img || staticService?.img || getFallbackImg(id), // Same logic as home page!
+            video_url: data.video_url || null, // Include video URL
             banner: data.banner || data.image_url || staticService?.banner || staticService?.img || getFallbackImg(id),
             longDescription: data.description,
             features: data.features || (staticService?.features || [
@@ -175,7 +176,22 @@ function ServiceDetailPage() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            {/* Banner */}
+            {/* Banner (Video first if available) */}
+            {service.video_url && (
+              <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
+                <video 
+                  src={service.video_url} 
+                  alt={service.title}
+                  muted 
+                  loop 
+                  playsInline 
+                  autoPlay
+                  className="w-full h-80 object-cover"
+                />
+              </div>
+            )}
+            
+            {/* Service Image */}
             <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-lg">
               <img
                 src={service.banner}
