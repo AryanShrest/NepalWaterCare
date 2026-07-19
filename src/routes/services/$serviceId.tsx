@@ -402,7 +402,13 @@ function ServiceDetailPage() {
 
               {/* Book Now Button */}
               <a
-                href="https://wa.me/9779714117380"
+                href={`https://wa.me/9779714117380?text=${encodeURIComponent(
+                  `Hello Hamro Drainage! I would like to book:
+Service: ${service.title}
+${service.price && service.price.trim() ? `Price: ${service.price}` : 'Price: Contact for pricing'}
+${selectedDate ? `Date: ${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}` : ''}
+${selectedTime ? `Time: ${selectedTime}` : ''}`
+                )}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3 bg-[#1e3a5f] text-white font-bold rounded-xl text-lg shadow-lg hover:bg-[#0f2440] transition flex items-center justify-center"
