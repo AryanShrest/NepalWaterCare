@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.hamrodrainage.com/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.hamrodrainage.com/services</loc>
+    <lastmod>2026-07-19</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <!-- Add your service-specific routes here, for example:
+  <!-- <url>
+    <loc>https://www.hamrodrainage.com/services/1</loc>
+    <lastmod>2026-07-19</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url> -->
+</urlset>
