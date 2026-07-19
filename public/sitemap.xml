@@ -12,11 +12,5 @@
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
-  <!-- Add your service-specific routes here, for example:
-  <!-- <url>
-    <loc>https://www.hamrodrainage.com/services/1</loc>
-    <lastmod>2026-07-19</lastmod>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url> -->
+  <!-- Add service-specific routes here -->
 </urlset>
